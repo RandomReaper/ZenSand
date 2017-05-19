@@ -35,16 +35,6 @@ public class FiveBarRobot extends TestbedTest {
 		}	
 	}
 
-	private void setFilterGroupIndex(Body b, short index) {
-		Fixture f = b.getFixtureList();
-
-		while (f != null) {
-			Filter fil = f.getFilterData();
-			fil.groupIndex = index;
-			f = f.getNext();
-		}
-	}
-
 	@Override
 	public void initTest(boolean argDeserialized) {
 		setTitle("Couple of Things Test");
