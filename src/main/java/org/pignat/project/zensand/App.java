@@ -17,13 +17,14 @@ public class App {
 		model.addCategory("Five bar parallel robot");
 		model.addTest(new FiveBarRobot());
 
-		model.getSettings().addSetting(
-				new TestbedSetting("A", SettingType.ENGINE, -10, -10, 10));
+		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, 0, -90, +90));
+		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, 0, -90, +90));
+
+		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, false));
 
 		TestbedPanel panel = new TestPanelJ2D(model);
 
-		JFrame testbed = new TestbedFrame(model, panel,
-				UpdateBehavior.UPDATE_CALLED);
+		JFrame testbed = new TestbedFrame(model, panel, UpdateBehavior.UPDATE_CALLED);
 
 		testbed.setVisible(true);
 		testbed.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
