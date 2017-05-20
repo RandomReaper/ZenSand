@@ -1,6 +1,7 @@
 package org.pignat.project.zensand;
 
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
@@ -10,7 +11,6 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.testbed.framework.TestbedSetting;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
-
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 public class FiveBarRobot extends TestbedTest {
@@ -35,9 +35,11 @@ public class FiveBarRobot extends TestbedTest {
 		}	
 	}
 
+	RevoluteJointDef axec;
+	
 	@Override
 	public void initTest(boolean argDeserialized) {
-		setTitle("Couple of Things Test");
+		setTitle("ZenSand");
 
 		getWorld().setGravity(new Vec2((float) 0.0, (float) -9.81));
 		PolygonShape shape = new PolygonShape();
@@ -130,7 +132,7 @@ public class FiveBarRobot extends TestbedTest {
 
 		getWorld().createJoint(axe2);
 		
-		RevoluteJointDef axec = new RevoluteJointDef();
+		axec = new RevoluteJointDef();
 		axec.bodyA = arm1_2;
 		axec.bodyB = arm2_2;
 		axec.collideConnected = false;
@@ -149,15 +151,22 @@ public class FiveBarRobot extends TestbedTest {
 
 	@Override
 	public void step(TestbedSettings settings) {
-		super.step(settings); // make sure we update the engine!
+		super.step(settings);
 		TestbedSetting a = settings.getSetting("A");
-		getWorld().setGravity(new Vec2(0, a.value));
-		// System.out.println("gravity" + a.value);
 
+		getWorld().setGravity(new Vec2(0, a.value));
+		getDebugDraw().drawCircle(axec.bodyA.getWorldCenter(), 1.0f, Color3f.WHITE);
+		addTextLine(axec.bodyA.getWorldCenter().toString());
 	}
 
 	@Override
 	public String getTestName() {
 		return "Five bar parallel robot";
+	}
+	
+	@Override
+	public void keyPressed(char keyCar, int keyCode) {
+		// TODO Auto-generated method stub
+		super.keyPressed(keyCar, keyCode);
 	}
 }
