@@ -1,6 +1,5 @@
 package org.pignat.project.zensand;
 
-import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Color3f;
 import org.jbox2d.common.Vec2;
@@ -10,17 +9,14 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
-import org.jbox2d.testbed.framework.TestbedSetting;
 import org.jbox2d.testbed.framework.TestbedSettings;
 import org.jbox2d.testbed.framework.TestbedTest;
-import org.jbox2d.dynamics.joints.Joint;
-import org.jbox2d.dynamics.joints.JointDef;
 import org.jbox2d.dynamics.joints.RevoluteJoint;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 public class FiveBarRobot extends TestbedTest {
 
-	static final float DENSITY = 1f;
+	static final float DENSITY = 0.1f;
 
 	static final short GROUP_FIXED = -1;
 	static final short GROUP_MOVING = -2;
@@ -84,7 +80,7 @@ public class FiveBarRobot extends TestbedTest {
 
 		public void set(int target) {
 			motor.enableMotor(true);
-			motor.setMotorSpeed(-(target - angleDeg()));
+			motor.setMotorSpeed((float) (-motor.getJointAngle() - Math.toRadians(target)));
 			motor.setMaxMotorTorque(50000);
 		}
 
@@ -186,6 +182,7 @@ public class FiveBarRobot extends TestbedTest {
 		getDebugDraw().drawCircle(pos(axec.bodyA), 1.0f, Color3f.WHITE);
 		addTextLine(String.format("servo1: %f°", servo1.angleDeg()));
 		addTextLine(String.format("servo2: %f°", servo2.angleDeg()));
+		addTextLine(String.format("servo2: %f°", servo2.motor.getJointAngle()));
 	}
 
 	@Override
