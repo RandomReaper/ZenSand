@@ -68,7 +68,7 @@ public class FiveBarRobot extends TestbedTest {
 			RevoluteJointDef motordef = new RevoluteJointDef();
 			motordef.initialize(carter, arm, carter.getWorldCenter());
 
-			motordef.maxMotorTorque = 10000;
+			motordef.maxMotorTorque = 1;
 			motordef.referenceAngle = 0;
 			motordef.enableMotor = false;
 			motordef.lowerAngle = (float) Math.toRadians(-90);

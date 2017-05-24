@@ -17,10 +17,10 @@ public class App {
 		model.addCategory("Five bar parallel robot");
 		model.addTest(new FiveBarRobot());
 
-		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, 0, -90, +90));
-		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, 0, -90, +90));
+		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, +5, -90, +90));
+		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, +5, -90, +90));
 
-		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, false));
+		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, true));
 
 		TestbedPanel panel = new TestPanelJ2D(model);
 
