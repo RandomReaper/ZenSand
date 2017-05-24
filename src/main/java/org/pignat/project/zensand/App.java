@@ -20,7 +20,7 @@ public class App {
 		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, 0, -90, +90));
 		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, 0, -90, +90));
 
-		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, true));
+		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, false));
 
 		TestbedPanel panel = new TestPanelJ2D(model);
 

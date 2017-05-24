@@ -21,7 +21,7 @@ public class FiveBarRobot extends TestbedTest {
 	static final short GROUP_FIXED = -1;
 	static final short GROUP_MOVING = -2;
 
-	static final float LENGTH = 10f;
+	static final float LENGTH = 5f;
 	static final float WIDTH = 1f;
 	static final float MARGIN = 2f;
 
@@ -40,20 +40,23 @@ public class FiveBarRobot extends TestbedTest {
 		RevoluteJoint motor;
 		Body carter;
 		Body arm;
+		float length;
 
-		public Servo(World world, int i, int j) {
-			Vec2 armPosition = new Vec2(0, 1 * LENGTH + MARGIN);
+		public Servo(World world, float x, float y, float length, float angle) {
+			this.length = length;
+			Vec2 armPosition = new Vec2(0, 1 * length + MARGIN);
 			PolygonShape shape = new PolygonShape();
 			shape.setAsBox(WIDTH, WIDTH);
 
 			BodyDef o1def = new BodyDef();
 			o1def.type = BodyType.STATIC;
-			o1def.position.set(i * (LENGTH + MARGIN), j);
+			o1def.position.set(x, y);
 			o1def.allowSleep = false;
+			o1def.angle = angle;
 			carter = world.createBody(o1def);
 			carter.createFixture(shape, DENSITY);
 
-			shape.setAsBox(WIDTH, LENGTH);
+			shape.setAsBox(WIDTH, length);
 
 			BodyDef arm_def = new BodyDef();
 			arm_def.type = BodyType.DYNAMIC;
@@ -66,9 +69,10 @@ public class FiveBarRobot extends TestbedTest {
 			motordef.initialize(carter, arm, carter.getWorldCenter());
 
 			motordef.maxMotorTorque = 10000;
+			motordef.referenceAngle = 0;
 			motordef.enableMotor = false;
-			motordef.lowerAngle = (float) Math.toRadians(-100);
-			motordef.upperAngle = (float) Math.toRadians(+100);
+			motordef.lowerAngle = (float) Math.toRadians(-90);
+			motordef.upperAngle = (float) Math.toRadians(+90);
 			motordef.enableLimit = true;
 
 			motor = (RevoluteJoint) getWorld().createJoint(motordef);
@@ -104,8 +108,8 @@ public class FiveBarRobot extends TestbedTest {
 
 		Vec2 o_arm2 = new Vec2(0, 2 * LENGTH + MARGIN);
 
-		servo1 = new Servo(getWorld(), -1, 0);
-		servo2 = new Servo(getWorld(), +1, 0);
+		servo1 = new Servo(getWorld(), -(LENGTH + MARGIN), 0, LENGTH, (float) Math.toRadians(-90));
+		servo2 = new Servo(getWorld(), +(LENGTH + MARGIN), 0, LENGTH, (float) Math.toRadians(+90));
 
 		shape.setAsBox(1, LENGTH);
 
@@ -127,7 +131,7 @@ public class FiveBarRobot extends TestbedTest {
 		axe1.bodyA = servo1.arm;
 		axe1.bodyB = arm1_2;
 		axe1.collideConnected = false;
-		axe1.localAnchorA.set(new Vec2(0, +LENGTH));
+		axe1.localAnchorA.set(new Vec2(0, +servo1.length));
 		axe1.localAnchorB.set(new Vec2(0, -LENGTH));
 
 		getWorld().createJoint(axe1);
@@ -136,7 +140,7 @@ public class FiveBarRobot extends TestbedTest {
 		axe2.bodyA = servo2.arm;
 		axe2.bodyB = arm2_2;
 		axe2.collideConnected = false;
-		axe2.localAnchorA.set(new Vec2(0, +LENGTH));
+		axe2.localAnchorA.set(new Vec2(0, +servo2.length));
 		axe2.localAnchorB.set(new Vec2(0, -LENGTH));
 
 		getWorld().createJoint(axe2);
@@ -150,10 +154,10 @@ public class FiveBarRobot extends TestbedTest {
 
 		getWorld().createJoint(axec);
 
-		setFilter(servo1.carter, (short) 0x0001, (short) 0xffff);
-		setFilter(servo2.carter, (short) 0x0001, (short) 0xffff);
-		setFilter(servo1.arm, (short) 0x0002, (short) 0x0003);
-		setFilter(servo2.arm, (short) 0x0002, (short) 0x0003);
+		setFilter(servo1.carter, (short) 0x0001, (short) 0x0000);
+		setFilter(servo2.carter, (short) 0x0001, (short) 0x0000);
+		setFilter(servo1.arm, (short) 0x0002, (short) 0x0000);
+		setFilter(servo2.arm, (short) 0x0002, (short) 0x0000);
 		setFilter(arm1_2, (short) 0x0002, (short) 0x0000);
 		setFilter(arm2_2, (short) 0x0002, (short) 0x0000);
 	}
