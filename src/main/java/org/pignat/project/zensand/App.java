@@ -12,15 +12,16 @@ import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
 
 public class App {
 	public static void main(String[] args) {
+		final int servoMaxAngle = 90;
 		TestbedModel model = new TestbedModel();
 
 		model.addCategory("Five bar parallel robot");
-		model.addTest(new FiveBarRobot());
+		model.addTest(new FiveBarRobot(servoMaxAngle));
 
-		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, +5, -90, +90));
-		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, +5, -90, +90));
+		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, 0, -servoMaxAngle/2, servoMaxAngle/2));
+		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, 0, -servoMaxAngle/2, servoMaxAngle/2));
 
-		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, true));
+		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, false));
 
 		TestbedPanel panel = new TestPanelJ2D(model);
 

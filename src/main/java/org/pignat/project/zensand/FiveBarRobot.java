@@ -21,9 +21,12 @@ public class FiveBarRobot extends TestbedTest {
 	static final short GROUP_FIXED = -1;
 	static final short GROUP_MOVING = -2;
 
-	static final float LENGTH = 5f;
+	static final float DIST = 0f;
+	static final float LENGTH_1 = 3f;
+	static final float LENGTH_2 = (LENGTH_1+DIST/2)*1.03f;
 	static final float WIDTH = 1f;
-	static final float MARGIN = 2f;
+	static final float MARGIN = 0f;
+	static final float SERVO_ANGLE = 50f;
 
 	private void setFilter(Body b, short category, short mask) {
 		Fixture f = b.getFixtureList();
@@ -40,11 +43,13 @@ public class FiveBarRobot extends TestbedTest {
 		RevoluteJoint motor;
 		Body carter;
 		Body arm;
-		float length;
+		float l1;
+		float l2;
 
-		public Servo(World world, float x, float y, float length, float angle) {
-			this.length = length;
-			Vec2 armPosition = new Vec2(0, 1 * length + MARGIN);
+		public Servo(World world, float x, float y, float l1, float l2, float angle, float move) {
+			this.l1 = l1;
+			this.l2 = l1;
+			Vec2 armPosition = new Vec2(0, 1 * l1 + MARGIN);
 			PolygonShape shape = new PolygonShape();
 			shape.setAsBox(WIDTH, WIDTH);
 
@@ -56,7 +61,7 @@ public class FiveBarRobot extends TestbedTest {
 			carter = world.createBody(o1def);
 			carter.createFixture(shape, DENSITY);
 
-			shape.setAsBox(WIDTH, length);
+			shape.setAsBox(WIDTH, l1);
 
 			BodyDef arm_def = new BodyDef();
 			arm_def.type = BodyType.DYNAMIC;
@@ -71,8 +76,8 @@ public class FiveBarRobot extends TestbedTest {
 			motordef.maxMotorTorque = 1;
 			motordef.referenceAngle = 0;
 			motordef.enableMotor = false;
-			motordef.lowerAngle = (float) Math.toRadians(-90);
-			motordef.upperAngle = (float) Math.toRadians(+90);
+			motordef.lowerAngle = (float) Math.toRadians(-move/2);
+			motordef.upperAngle = (float) Math.toRadians(+move/2);
 			motordef.enableLimit = true;
 
 			motor = (RevoluteJoint) getWorld().createJoint(motordef);
@@ -93,10 +98,16 @@ public class FiveBarRobot extends TestbedTest {
 		}
 	}
 
+	int servoMaxAngle;
+	
 	RevoluteJointDef axec;
 	Servo servo1;
 	Servo servo2;
 
+	public FiveBarRobot(int angle) {
+		servoMaxAngle = angle;
+	}
+	
 	@Override
 	public void initTest(boolean argDeserialized) {
 		setTitle("ZenSand");
@@ -106,12 +117,12 @@ public class FiveBarRobot extends TestbedTest {
 
 		shape.setAsBox(WIDTH, WIDTH);
 
-		Vec2 o_arm2 = new Vec2(0, 2 * LENGTH + MARGIN);
+		Vec2 o_arm2 = new Vec2(0, LENGTH_1 + LENGTH_2);
 
-		servo1 = new Servo(getWorld(), -(LENGTH + MARGIN), 0, LENGTH, (float) Math.toRadians(-90));
-		servo2 = new Servo(getWorld(), +(LENGTH + MARGIN), 0, LENGTH, (float) Math.toRadians(+90));
+		servo1 = new Servo(getWorld(), -(DIST/2), 0, LENGTH_1, LENGTH_2, (float) Math.toRadians(+SERVO_ANGLE), servoMaxAngle);
+		servo2 = new Servo(getWorld(), +(DIST/2), 0, LENGTH_1, LENGTH_2, (float) Math.toRadians(-SERVO_ANGLE), servoMaxAngle);
 
-		shape.setAsBox(1, LENGTH);
+		shape.setAsBox(1, LENGTH_2);
 
 		BodyDef arm1_2def = new BodyDef();
 		arm1_2def.type = BodyType.DYNAMIC;
@@ -131,8 +142,8 @@ public class FiveBarRobot extends TestbedTest {
 		axe1.bodyA = servo1.arm;
 		axe1.bodyB = arm1_2;
 		axe1.collideConnected = false;
-		axe1.localAnchorA.set(new Vec2(0, +servo1.length));
-		axe1.localAnchorB.set(new Vec2(0, -LENGTH));
+		axe1.localAnchorA.set(new Vec2(0, +servo1.l1));
+		axe1.localAnchorB.set(new Vec2(0, -LENGTH_2));
 
 		getWorld().createJoint(axe1);
 
@@ -140,8 +151,8 @@ public class FiveBarRobot extends TestbedTest {
 		axe2.bodyA = servo2.arm;
 		axe2.bodyB = arm2_2;
 		axe2.collideConnected = false;
-		axe2.localAnchorA.set(new Vec2(0, +servo2.length));
-		axe2.localAnchorB.set(new Vec2(0, -LENGTH));
+		axe2.localAnchorA.set(new Vec2(0, +servo2.l1));
+		axe2.localAnchorB.set(new Vec2(0, -LENGTH_2));
 
 		getWorld().createJoint(axe2);
 
@@ -149,8 +160,8 @@ public class FiveBarRobot extends TestbedTest {
 		axec.bodyA = arm1_2;
 		axec.bodyB = arm2_2;
 		axec.collideConnected = false;
-		axec.localAnchorA.set(new Vec2(0, +LENGTH));
-		axec.localAnchorB.set(new Vec2(0, +LENGTH));
+		axec.localAnchorA.set(new Vec2(0, +LENGTH_2));
+		axec.localAnchorB.set(new Vec2(0, +LENGTH_2));
 
 		getWorld().createJoint(axec);
 
@@ -164,8 +175,8 @@ public class FiveBarRobot extends TestbedTest {
 
 	private static Vec2 pos(Body body) {
 
-		float x = (float) (body.getWorldCenter().x - LENGTH * Math.sin(body.getAngle()));
-		float y = (float) (body.getWorldCenter().y + LENGTH * Math.cos(body.getAngle()));
+		float x = (float) (body.getWorldCenter().x - LENGTH_2 * Math.sin(body.getAngle()));
+		float y = (float) (body.getWorldCenter().y + LENGTH_2 * Math.cos(body.getAngle()));
 		return new Vec2(x, y);
 	}
 
