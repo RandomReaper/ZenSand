@@ -1,33 +1,145 @@
 package org.pignat.project.zensand;
 
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.JFrame;
-
-import org.jbox2d.testbed.framework.TestbedController.UpdateBehavior;
-import org.jbox2d.testbed.framework.TestbedFrame;
-import org.jbox2d.testbed.framework.TestbedModel;
-import org.jbox2d.testbed.framework.TestbedPanel;
-import org.jbox2d.testbed.framework.TestbedSetting;
-import org.jbox2d.testbed.framework.TestbedSetting.SettingType;
-import org.jbox2d.testbed.framework.j2d.TestPanelJ2D;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class App {
+
 	public static void main(String[] args) {
-		final int servoMaxAngle = 90;
-		TestbedModel model = new TestbedModel();
 
-		model.addCategory("Five bar parallel robot");
-		model.addTest(new FiveBarRobot(servoMaxAngle));
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+	}
 
-		model.getSettings().addSetting(new TestbedSetting("A", SettingType.ENGINE, 0, -servoMaxAngle/2, servoMaxAngle/2));
-		model.getSettings().addSetting(new TestbedSetting("B", SettingType.ENGINE, 0, -servoMaxAngle/2, servoMaxAngle/2));
+	private static void createAndShowGUI() {
+		JFrame f = new JFrame("ZenSand");
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.add(new MyPanel(false));
+		f.setSize(250, 250);
+		f.setVisible(true);
+	}
 
-		model.getSettings().addSetting(new TestbedSetting("enable", SettingType.ENGINE, false));
+}
 
-		TestbedPanel panel = new TestPanelJ2D(model);
+class MyPanel extends JPanel {
 
-		JFrame testbed = new TestbedFrame(model, panel, UpdateBehavior.UPDATE_CALLED);
+	BufferedImage img;
+	Controller controller = new Controller(25, 25, 5);
+	int width;
+	int height;
+	boolean debug;
 
-		testbed.setVisible(true);
-		testbed.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public MyPanel(boolean debug) {
+		this.debug = debug;
+
+		img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+		width = getWidth();
+		height = getHeight();
+
+		ActionListener repaintPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				MyPanel.this.repaint();
+			}
+		};
+
+		new Timer(10, repaintPerformer).start();
+
+		ActionListener stepPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				MyPanel.this.step(111);
+			}
+		};
+
+		new Timer(20, stepPerformer).start();
+
+		ActionListener fadePerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				MyPanel.this.fade();
+			}
+		};
+
+		new Timer(25, fadePerformer).start();
+
+	}
+
+	public Dimension getPreferredSize() {
+		return new Dimension(250, 200);
+	}
+
+	public void step(int steps) {
+		Graphics2D gra = img.createGraphics();
+
+		for (int i = 0; i < steps; i++) {
+
+			gra.setColor(Color.BLUE);
+			Arms arms = controller.arms();
+			int x = (int) Math.round(controller.pos().x);
+			int y = (int) Math.round(controller.pos().y);
+			if (debug) {
+				gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
+			}
+
+			gra.setColor(Color.WHITE);
+			x = (int) Math.round(arms.pos().x);
+			y = (int) Math.round(arms.pos().y);
+			gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
+
+			controller.step();
+		}
+
+	}
+
+	public void fade() {
+		RescaleOp op = new RescaleOp(0.999f, 0.0f, null);
+		op.filter(img, img);
+	}
+
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+
+		if (width != getWidth() || height != getHeight()) {
+			width = getWidth();
+			height = getHeight();
+			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			controller = new Controller(width, height, 15);
+		}
+
+		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight(), null);
+
+		Arms arms = controller.arms();
+		g.setColor(Color.YELLOW);
+		int size = (int) controller.size();
+		if (debug) {
+			g.drawOval(getWidth() / 2 - size, getHeight() / 2 - size, size * 2, size * 2);
+		}
+
+		if (true || debug) {
+			g.setColor(Color.RED);
+			int x = (int) arms.pos().x;
+			int y = (int) arms.pos().y;
+			int x1 = (int) arms.pos1().x;
+			int y1 = (int) arms.pos1().y;
+			g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
+			g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
+		}
+		if (debug) {
+			g.setColor(Color.RED);
+			g.drawOval(getWidth() / 2 - size * 2, getHeight() / 2 - size * 2, size * 4, size * 4);
+			int margin = (int) controller.margin();
+			g.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
+		}
 	}
 }
