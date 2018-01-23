@@ -2,6 +2,11 @@ package org.pignat.project.zensand;
 
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+import org.pignat.project.zensand.components.Arms;
+import org.pignat.project.zensand.components.Controller;
+import org.pignat.project.zensand.components.Drawers;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -27,23 +32,23 @@ public class App {
 	private static void createAndShowGUI() {
 		JFrame f = new JFrame("ZenSand");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.add(new MyPanel(false));
+		f.add(new MyPanel(true));
 		f.setSize(250, 250);
 		f.setVisible(true);
 	}
-
 }
 
 class MyPanel extends JPanel {
 
 	BufferedImage img;
-	Controller controller = new Controller(25, 25, 5);
+	int drawerCounter = -1;
+	Controller controller = new Controller(Drawers.get(0), 25, 25, 5);
 	int width;
 	int height;
 	boolean debug;
 
 	public MyPanel(boolean debug) {
-		this.debug = debug;
+		this.debug = false;
 
 		img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
 		width = getWidth();
@@ -59,7 +64,7 @@ class MyPanel extends JPanel {
 
 		ActionListener stepPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				MyPanel.this.step(111);
+				MyPanel.this.step(50);
 			}
 		};
 
@@ -71,7 +76,7 @@ class MyPanel extends JPanel {
 			}
 		};
 
-		new Timer(25, fadePerformer).start();
+		new Timer(20, fadePerformer).start();
 
 	}
 
@@ -84,19 +89,14 @@ class MyPanel extends JPanel {
 
 		for (int i = 0; i < steps; i++) {
 
-			gra.setColor(Color.BLUE);
-			Arms arms = controller.arms();
-			int x = (int) Math.round(controller.pos().x);
-			int y = (int) Math.round(controller.pos().y);
-			if (debug) {
-				gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
-			}
-
 			gra.setColor(Color.WHITE);
-			x = (int) Math.round(arms.pos().x);
-			y = (int) Math.round(arms.pos().y);
+			int x = (int) Math.round(controller.arms().pos().x);
+			int y = (int) Math.round(controller.arms().pos().y);
 			gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
 
+			if (controller.drawer().finished()) {
+				controller.drawer(Drawers.get(drawerCounter++));
+			}
 			controller.step();
 		}
 
@@ -114,7 +114,7 @@ class MyPanel extends JPanel {
 			width = getWidth();
 			height = getHeight();
 			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			controller = new Controller(width, height, 15);
+			controller = new Controller(Drawers.get(drawerCounter++), width, height, 15);
 		}
 
 		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight(), null);
@@ -126,7 +126,17 @@ class MyPanel extends JPanel {
 			g.drawOval(getWidth() / 2 - size, getHeight() / 2 - size, size * 2, size * 2);
 		}
 
-		if (true || debug) {
+		if (debug) {
+			g.setColor(Color.ORANGE);
+			int x = (int) controller.arms().pos().x;
+			int y = (int) controller.arms().pos().y;
+			int x1 = (int) controller.arms().pos1().x;
+			int y1 = (int) controller.arms().pos1().y;
+			g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
+			g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
+		}
+
+		if (true) {
 			g.setColor(Color.RED);
 			int x = (int) arms.pos().x;
 			int y = (int) arms.pos().y;

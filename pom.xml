@@ -16,19 +16,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.processing/core -->
 		<dependency>
-			<!-- https://mvnrepository.com/artifact/org.jbox2d/jbox2d-library -->
-
-			<groupId>org.jbox2d</groupId>
-			<artifactId>jbox2d-library</artifactId>
-			<version>2.2.1.1</version>
-
-
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.jbox2d/jbox2d-testbed -->
-		<dependency>
-			<groupId>org.jbox2d</groupId>
-			<artifactId>jbox2d-testbed</artifactId>
-			<version>2.2.1.1</version>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.11</version>
 		</dependency>
 
 	</dependencies>
