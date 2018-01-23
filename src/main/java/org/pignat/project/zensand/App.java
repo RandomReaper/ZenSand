@@ -42,7 +42,7 @@ class MyPanel extends JPanel {
 
 	BufferedImage img;
 	int drawerCounter = -1;
-	Controller controller = new Controller(Drawers.get(0), 25, 25, 5);
+	Controller controller = new Controller(Drawers.get(0), 25, 25, 5, 1);
 	int width;
 	int height;
 	boolean debug;
@@ -94,7 +94,7 @@ class MyPanel extends JPanel {
 			int y = (int) Math.round(controller.arms().pos().y);
 			gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
 
-			if (controller.drawer().finished()) {
+			if (controller.finished()) {
 				controller.drawer(Drawers.get(drawerCounter++));
 			}
 			controller.step();
@@ -111,10 +111,11 @@ class MyPanel extends JPanel {
 		super.paintComponent(g);
 
 		if (width != getWidth() || height != getHeight()) {
+			drawerCounter = 0;
 			width = getWidth();
 			height = getHeight();
 			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			controller = new Controller(Drawers.get(drawerCounter++), width, height, 15);
+			controller = new Controller(Drawers.get(drawerCounter++), width, height, 15, .5);
 		}
 
 		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight(), null);

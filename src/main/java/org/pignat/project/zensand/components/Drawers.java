@@ -35,10 +35,6 @@ public class Drawers {
 				return d1.name().compareTo(d2.name());
 			}
 		});
-
-		for (Drawer d : list) {
-			System.out.println(d.name());
-		}
 	}
 
 	public static int size() {

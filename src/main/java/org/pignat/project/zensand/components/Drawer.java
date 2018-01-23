@@ -6,7 +6,7 @@ public interface Drawer {
 
 	abstract void init();
 
-	abstract V2 step();
+	abstract C2 step();
 
 	abstract boolean finished();
 }
