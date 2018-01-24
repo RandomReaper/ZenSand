@@ -53,7 +53,7 @@ class MyPanel extends JPanel {
 	public MyPanel(boolean debug) {
 		this.debug = false;
 
-		img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB);
+		img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
 		width = getWidth();
 		height = getHeight();
 
@@ -107,7 +107,7 @@ class MyPanel extends JPanel {
 	}
 
 	public void fade() {
-		RescaleOp op = new RescaleOp(0.999f, 0.0f, null);
+		RescaleOp op = new RescaleOp(new float[]{0.999f,0.999f,0.999f,1.0f}, new float[]{0,0,0,0}, null);
 		op.filter(img, img);
 	}
 
@@ -119,7 +119,7 @@ class MyPanel extends JPanel {
 			height = getHeight();
 			drawerCounter = 0;
 			dim = new Sizes(width, height, 5);
-			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			controller = new Controller(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()), dim, .5);
 		}
 
