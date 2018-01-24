@@ -6,6 +6,7 @@ import javax.swing.Timer;
 import org.pignat.project.zensand.components.Arms;
 import org.pignat.project.zensand.components.Controller;
 import org.pignat.project.zensand.components.Drawers;
+import org.pignat.project.zensand.components.Sizes;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
 
 public class App {
 
@@ -42,7 +44,8 @@ class MyPanel extends JPanel {
 
 	BufferedImage img;
 	int drawerCounter = -1;
-	Controller controller = new Controller(Drawers.get(0), 25, 25, 5, 1);
+	Sizes dim = new Sizes(25, 25, 1);
+	Controller controller = new Controller(Drawers.get(0, dim.ball_size()), dim, 1);
 	int width;
 	int height;
 	boolean debug;
@@ -64,7 +67,7 @@ class MyPanel extends JPanel {
 
 		ActionListener stepPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				MyPanel.this.step(50);
+				MyPanel.this.step(100);
 			}
 		};
 
@@ -89,13 +92,14 @@ class MyPanel extends JPanel {
 
 		for (int i = 0; i < steps; i++) {
 
+			double x = controller.arms().pos().x;
+			double y = controller.arms().pos().y;
 			gra.setColor(Color.WHITE);
-			int x = (int) Math.round(controller.arms().pos().x);
-			int y = (int) Math.round(controller.arms().pos().y);
-			gra.drawLine(getWidth() / 2 + x, getHeight() / 2 + y, getWidth() / 2 + x, getHeight() / 2 + y);
+			Ellipse2D.Double circle = new Ellipse2D.Double(getWidth() / 2 + x - dim.ball_size()/2, getHeight() / 2 + y - dim.ball_size()/2, dim.ball_size(), dim.ball_size());
+			gra.fill(circle);
 
 			if (controller.finished()) {
-				controller.drawer(Drawers.get(drawerCounter++));
+				controller.drawer(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()));
 			}
 			controller.step();
 		}
@@ -111,18 +115,19 @@ class MyPanel extends JPanel {
 		super.paintComponent(g);
 
 		if (width != getWidth() || height != getHeight()) {
-			drawerCounter = 0;
 			width = getWidth();
 			height = getHeight();
+			drawerCounter = 0;
+			dim = new Sizes(width, height, 5);
 			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			controller = new Controller(Drawers.get(drawerCounter++), width, height, 15, .5);
+			controller = new Controller(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()), dim, .5);
 		}
 
 		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight(), null);
 
 		Arms arms = controller.arms();
 		g.setColor(Color.YELLOW);
-		int size = (int) controller.size();
+		int size = (int) controller.dim().size();
 		if (debug) {
 			g.drawOval(getWidth() / 2 - size, getHeight() / 2 - size, size * 2, size * 2);
 		}
@@ -149,7 +154,7 @@ class MyPanel extends JPanel {
 		if (debug) {
 			g.setColor(Color.RED);
 			g.drawOval(getWidth() / 2 - size * 2, getHeight() / 2 - size * 2, size * 4, size * 4);
-			int margin = (int) controller.margin();
+			int margin = (int) controller.dim().margin();
 			g.drawRect(margin, margin, getWidth() - 2 * margin, getHeight() - 2 * margin);
 		}
 	}

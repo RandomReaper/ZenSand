@@ -50,6 +50,15 @@ public class V2 {
 		A2 angles_a = angles_a(dest, size);
 		A2 angles_b = angles_b(dest, size);
 
+		/**
+		 * dest can be out of reach because of computational error or because of a caller's error
+		 * handle computational error where the dest is too far for the size.
+		 */
+		if (Double.isNaN(angles_a.a) || Double.isNaN(angles_a.b))
+		{
+			return current_angle;
+		}
+		
 		double speed_a = new A2(angles_a.a - current_angle.a, angles_a.b - current_angle.b).norm().a;
 		double speed_b = new A2(angles_b.a - current_angle.a, angles_b.b - current_angle.b).norm().a;
 
@@ -68,6 +77,7 @@ public class V2 {
 	public static A2 bestSpeed(A2 motor, C2 dest, double size) {
 		A2 angles = bestPos(motor, dest, size);
 
+		bestPos(motor, new C2(10000,10000), size);
 		angles.a = angles.a - motor.a;
 		angles.b = angles.b - motor.b + angles.a;
 

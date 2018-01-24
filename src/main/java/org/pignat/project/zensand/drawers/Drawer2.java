@@ -9,10 +9,10 @@ public class Drawer2 implements Drawer {
 	private double count = 0;
 
 	public String name() {
-		return "Drawer 2";
+		return "Drawer 0";
 	}
 
-	public void init() {
+	public void init(double ball_size) {
 		count = 0;
 	}
 

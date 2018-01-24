@@ -4,7 +4,7 @@ public interface Drawer {
 
 	abstract String name();
 
-	abstract void init();
+	abstract void init(double ball_size);
 
 	abstract C2 step();
 

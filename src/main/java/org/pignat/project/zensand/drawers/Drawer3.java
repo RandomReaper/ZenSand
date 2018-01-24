@@ -12,7 +12,7 @@ public class Drawer3 implements Drawer {
 		return "Drawer 3";
 	}
 
-	public void init() {
+	public void init(double ball_size) {
 		count = 0;
 	}
 

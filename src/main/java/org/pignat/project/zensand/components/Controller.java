@@ -1,41 +1,31 @@
 package org.pignat.project.zensand.components;
 
+import org.pignat.project.zensand.projection.*;
+
 public class Controller {
-	private double size;
-	private double margin;
-	private double width;
-	private double height;
+	private Sizes dim;
 	private Arms arms;
 	private Path path;
 	private double speed;
 
-	public Controller(Drawer d, double w, double h, double ma, double _speed) {
-		height = h;
-		width = w;
-		margin = ma;
+	public Controller(Drawer d, Sizes _dim, double _speed) {
 		speed = _speed;
+		dim = _dim;
 
-		double lower_bound = Math.min((width - 2 * margin) / 2, (height - 2 * margin) / 2);
-		double upper_bound = Math.sqrt(Math.pow(width - 2 * margin, 2) + Math.pow(height - 2 * margin, 2)) / 4;
-		size = (int) Math.min(upper_bound, lower_bound);
-		arms = new Arms(size);
-		path = new Path(d, size, width, height, margin, speed);
+		arms = new Arms(dim.size());
+		path = new Path(d, new ProjectionMirror(), dim, speed);
 	}
 
 	public void drawer(Drawer d) {
-		path = new Path(d, size, width, height, margin, speed);
+		path = new Path(d, new ProjectionMirror(), dim, speed);
 	}
 	
 	public boolean finished() {
 		return path.finished();
 	}
 
-	public double size() {
-		return size;
-	}
-
-	public double margin() {
-		return margin;
+	public Sizes dim() {
+		return dim;
 	}
 
 	public Arms arms() {
@@ -45,7 +35,7 @@ public class Controller {
 	public void step() {
 		C2 next = path.step();
 
-		A2 best_speed = V2.bestSpeed(arms.m(), next, size);
+		A2 best_speed = V2.bestSpeed(arms.m(), next, dim.size());
 
 		arms.speed(best_speed);
 		arms.step();

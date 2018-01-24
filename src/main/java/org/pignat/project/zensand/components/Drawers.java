@@ -42,13 +42,13 @@ public class Drawers {
 		return list.size();
 	}
 
-	public static Drawer get(int i) {
+	public static Drawer get(int i, double ball_size) {
 		init();
 		i %= list.size();
 		i += list.size();
 		i %= list.size();
 		Drawer d = list.get(i);
-		d.init();
+		d.init(ball_size);
 		return d;
 	}
 

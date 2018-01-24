@@ -17,7 +17,7 @@ public class Drawer1 implements Drawer {
 		return new C2(0.95 * Math.sin(count), 0.95 * Math.cos(count));
 	}
 
-	public void init() {
+	public void init(double ball_size) {
 		count = 0;
 	}
 

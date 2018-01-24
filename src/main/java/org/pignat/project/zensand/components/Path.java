@@ -6,22 +6,18 @@ public class Path {
 
 	private static final double UPSAMPLE_FACTOR = 5;
 	private Drawer drawer;
-	private double size;
-	double width;
-	double height;
-	double margin;
+	private Sizes dim;
+	private Projection projection;
 	double speed;
 	private C2 last_step = null;
-	
+
 	private LinkedList<C2> original_steps;
 	private LinkedList<C2> upsample_steps;
 
-	public Path(Drawer _drawer, double _size, double _width, double _height, double _margin, double _speed) {
+	public Path(Drawer _drawer, Projection _projection, Sizes _dim, double _speed) {
+		projection = _projection;
 		drawer = _drawer;
-		size = _size;
-		width = _width;
-		height = _height;
-		margin = _margin;
+		dim = _dim;
 		speed = _speed;
 		original_steps = new LinkedList<C2>();
 		upsample_steps = new LinkedList<C2>();
@@ -71,7 +67,17 @@ public class Path {
 		}
 
 		while (original_steps.size() < 2) {
-			original_steps.add(drawer.step().resize(size, width, height, margin));
+			C2 step = projection.p(drawer.step(), dim);
+			C2 sized = new C2(step).resize(dim.size());
+			C2 croped = new C2(step).resize(dim.size(), dim.width(), dim.height(), dim.margin());
+
+			if (sized.same(croped)) {
+				original_steps.add(sized);
+			} else {
+				if (drawer.finished()) {
+					original_steps.add(new C2(0,0));
+				}
+			}
 		}
 
 		upsample_steps.add(original_steps.removeFirst());
@@ -86,29 +92,25 @@ public class Path {
 
 	public C2 step() {
 		C2 step;
-		
-		if (last_step == null)
-		{
+
+		if (last_step == null) {
 			step = upsample_step();
 			last_step = step;
 			return step;
 		}
 		double distance = 0;
-		do
-		{
+		do {
 			step = upsample_step();
-			distance = new C2(step.x-last_step.x, step.y-last_step.y).distance();
-			
-			if (drawer.finished())
-			{
+			distance = new C2(step.x - last_step.x, step.y - last_step.y).distance();
+
+			if (drawer.finished()) {
 				last_step = step;
 				return step;
 			}
-		}
-		while (distance < speed);
-		
+		} while (distance < speed);
+
 		last_step = step;
-		
+
 		return step;
 	}
 
