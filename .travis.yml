@@ -4,8 +4,6 @@ jdk:
 addons:
   sonarqube:
     organization: "randomreaper-github"
-    token:
-      secure: "l9UTH1tRfc0mp/u/HRx4utvdi0uGO0+6aQUQ8+AU81OSLJH+RRyWcE6geiT1CMHt/2gkK7t9kwS4HWiVgoT97IJ5A0QNVOc2RJtQaZDTPJDRLaAzFiIZyqbLiF0uOiWmCQY/bDlsusN1Mfw/pUHzJyTL71/mHPmhPqWd/MbSFWZK6iUnzCkIa5zD1RLOQ/N/npSzcHnAvtk37xqKtKF3+YI1VwwwmFHcQt62CKjrzZZbhkGyf7Z8YuSS6uoZDRawy0uMEbXNKbTlH4anE1EcndAebFbZDxjCXDA9lTFzZ8N+zlQmORQUWDlZbL1ggDzuMagoARoknXxgCOn5cit5DY8MXvSKxagx1qlmmGX8mT5927faQukiVtfVDVIRu/NfCmxDmwe7HJv9eiln2nHecedKZsVXqye7/gbEizFz+rLT94Dvy8CoJVmsCVN7aR6BevWudii8f2uUIlrIo9zF0Ytv8xKPQfmJD35NjH658enxZFH6VdcwIO0Bvd1TAv13vO7mmhCKNQ9kcEYgO82rKnBaSOv7LZbxaTeBWCLIDU7FD5NrAyNNIEz7LuG1TGYGzX+VT5IQcWLtdSKeRgnSYPTMz0xweGiabDp7cuggfKUSwHNS9D0vijy8y4PIBKfLTyh1XgFEMt0kTaBzWSJIFtf4jkFCX0jOXK+OE6iTWMA="
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
