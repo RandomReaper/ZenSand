@@ -6,7 +6,7 @@ import javax.swing.Timer;
 import org.pignat.project.zensand.components.Arms;
 import org.pignat.project.zensand.components.Controller;
 import org.pignat.project.zensand.components.Drawers;
-import org.pignat.project.zensand.components.Sizes;
+import org.pignat.project.zensand.components.Dimensions;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -44,7 +44,7 @@ class MyPanel extends JPanel {
 
 	BufferedImage img;
 	int drawerCounter = -1;
-	Sizes dim = new Sizes(25, 25, 1);
+	Dimensions dim = new Dimensions(25, 25, 1);
 	Controller controller = new Controller(Drawers.get(0, dim.ball_size()), dim, 1);
 	int width;
 	int height;
@@ -118,7 +118,7 @@ class MyPanel extends JPanel {
 			width = getWidth();
 			height = getHeight();
 			drawerCounter = 0;
-			dim = new Sizes(width, height, 5);
+			dim = new Dimensions(width, height, 5);
 			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			controller = new Controller(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()), dim, .5);
 		}

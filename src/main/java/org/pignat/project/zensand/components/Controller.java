@@ -3,12 +3,12 @@ package org.pignat.project.zensand.components;
 import org.pignat.project.zensand.projection.*;
 
 public class Controller {
-	private Sizes dim;
+	private Dimensions dim;
 	private Arms arms;
 	private Path path;
 	private double speed;
 
-	public Controller(Drawer d, Sizes _dim, double _speed) {
+	public Controller(Drawer d, Dimensions _dim, double _speed) {
 		speed = _speed;
 		dim = _dim;
 
@@ -24,7 +24,7 @@ public class Controller {
 		return path.finished();
 	}
 
-	public Sizes dim() {
+	public Dimensions dim() {
 		return dim;
 	}
 

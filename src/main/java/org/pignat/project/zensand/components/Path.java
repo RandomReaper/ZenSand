@@ -6,7 +6,7 @@ public class Path {
 
 	private static final double UPSAMPLE_FACTOR = 5;
 	private Drawer drawer;
-	private Sizes dim;
+	private Dimensions dim;
 	private Projection projection;
 	double speed;
 	private C2 last_step = null;
@@ -14,7 +14,7 @@ public class Path {
 	private LinkedList<C2> original_steps;
 	private LinkedList<C2> upsample_steps;
 
-	public Path(Drawer _drawer, Projection _projection, Sizes _dim, double _speed) {
+	public Path(Drawer _drawer, Projection _projection, Dimensions _dim, double _speed) {
 		projection = _projection;
 		drawer = _drawer;
 		dim = _dim;
