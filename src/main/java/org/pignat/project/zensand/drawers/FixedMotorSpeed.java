@@ -19,19 +19,19 @@ public class FixedMotorSpeed implements Drawer {
 	
 	@Override
 	public String name() {
-		return "FixedMotorSpeed";
+		return "0FixedMotorSpeed";
 	}
 
 	@Override
 	public void init(double ballSize) {
 		count = 0;
-		setSpeed(0.1, 0.11, 10 * Math.PI);
+		setSpeed(0.1, 0.11, 100 * Math.PI);
 	}
 
 	@Override
 	public C2 step() {
 		if (!finished()) {
-			count += 2 * Math.PI / 1000;
+			count += 2 * Math.PI / 100;
 		}
 		
 		double a = count * speedA;

@@ -9,17 +9,19 @@ public class Controller implements Serializable {
 	private Arms arms;
 	private Path path;
 	private double speed;
+	private Drawer drawer;
 
-	public Controller(Drawer d, Arms arms, Dimensions dim, double speed) {
-		this.speed = speed;
-		this.dim = dim;
-
+	public Controller(Drawer drawer, Arms arms, Dimensions dim, double speed) {
+		this.drawer = drawer;
 		this.arms = arms;
-		path = new Path(d, new ProjectionNop(), dim, arms.pos(), speed);
+		this.dim = dim;
+		this.speed = speed;
+		path = new Path(drawer, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 
-	public void drawer(Drawer d) {
-		path = new Path(d, new ProjectionNop(), dim, arms.pos(), speed);
+	public void drawer(Drawer drawer) {
+		this.drawer = drawer;
+		path = new Path(drawer, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 	
 	public boolean finished() {
@@ -32,6 +34,10 @@ public class Controller implements Serializable {
 
 	public Arms arms() {
 		return arms;
+	}
+	
+	public Drawer drawer() {
+		return drawer;
 	}
 
 	public void step() {
