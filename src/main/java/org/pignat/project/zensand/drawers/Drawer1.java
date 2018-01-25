@@ -6,10 +6,12 @@ import org.pignat.project.zensand.components.C2;
 public class Drawer1 implements Drawer {
 	private double count = 0;
 
+	@Override
 	public String name() {
-		return "Drawer 1";
+		return "Drawer1";
 	}
 
+	@Override
 	public C2 step() {
 		if (!finished()) {
 			count += 2 * Math.PI / 1000;
@@ -17,11 +19,13 @@ public class Drawer1 implements Drawer {
 		return new C2(0.95 * Math.sin(count), 0.95 * Math.cos(count));
 	}
 
-	public void init(double ball_size) {
+	@Override
+	public void init(double ballSize) {
 		count = 0;
 	}
 
+	@Override
 	public boolean finished() {
-		return count > 2 * Math.PI;
+		return count > 2 * Math.PI * 1.2;
 	}
 }

@@ -4,12 +4,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.reflections.Reflections;
 
 public class Drawers {
+
+	private static final Logger LOGGER = Logger.getLogger( Drawers.class.getName() );
 	private static LinkedList<Drawer> list;
 
+	private Drawers() {
+		
+	}
+	
 	private static void init() {
 		if (list != null) {
 			return;
@@ -24,13 +32,14 @@ public class Drawers {
 			try {
 				list.add(c.newInstance());
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				LOGGER.log(Level.SEVERE, "", e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				LOGGER.log(Level.SEVERE, "", e);
 			}
 		}
 
 		Collections.sort(list, new Comparator<Drawer>() {
+			@Override
 			public int compare(Drawer d1, Drawer d2) {
 				return d1.name().compareTo(d2.name());
 			}
@@ -42,13 +51,13 @@ public class Drawers {
 		return list.size();
 	}
 
-	public static Drawer get(int i, double ball_size) {
+	public static Drawer get(int i, double ballSize) {
 		init();
 		i %= list.size();
 		i += list.size();
 		i %= list.size();
 		Drawer d = list.get(i);
-		d.init(ball_size);
+		d.init(ballSize);
 		return d;
 	}
 

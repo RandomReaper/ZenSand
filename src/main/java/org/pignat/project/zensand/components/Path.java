@@ -1,120 +1,122 @@
 package org.pignat.project.zensand.components;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Path {
+public class Path implements Serializable {
 
 	private static final double UPSAMPLE_FACTOR = 5;
 	private Drawer drawer;
 	private Dimensions dim;
 	private Projection projection;
-	double speed;
-	private C2 last_step = null;
+	double resolution;
+	private C2 lastStep = null;
 
-	private LinkedList<C2> original_steps;
-	private LinkedList<C2> upsample_steps;
+	private LinkedList<C2> drawerSteps;
+	private LinkedList<C2> upsampledSteps;
 
-	public Path(Drawer _drawer, Projection _projection, Dimensions _dim, double _speed) {
-		projection = _projection;
-		drawer = _drawer;
-		dim = _dim;
-		speed = _speed;
-		original_steps = new LinkedList<C2>();
-		upsample_steps = new LinkedList<C2>();
+	public Path(Drawer drawer, Projection projection, Dimensions dim, C2 pos, double resolution) {
+		this.projection = projection;
+		this.drawer = drawer;
+		this.dim = dim;
+		this.resolution = resolution;
+		drawerSteps = new LinkedList<C2>();
+		drawerSteps.add(pos);
+		upsampledSteps = new LinkedList<C2>();
 	}
 
-	private double max_dist(LinkedList<C2> l) {
-		double max_dist = 0;
+	private double maxDistance(LinkedList<C2> l) {
+		double max = 0;
 
 		C2 old = null;
 		for (C2 current : l) {
-			if (!(old == null)) {
-				double dist = new C2(old.x - current.x, old.y - current.y).distance();
-				if (dist > max_dist) {
-					max_dist = dist;
+			if (old != null) {
+				double dist = new C2(old.x() - current.x(), old.y() - current.y()).distance();
+				if (dist > max) {
+					max = dist;
 				}
 			}
 			old = current;
 		}
 
-		return max_dist;
+		return max;
 	}
 
 	private void upsample() {
 		LinkedList<C2> newlist = new LinkedList<C2>();
 
 		C2 old = null;
-		for (C2 current : upsample_steps) {
-			if (!(old == null)) {
-				double dx = current.x - old.x;
-				double dy = current.y - old.y;
-				C2 middle = new C2(old.x + dx / 2, old.y + dy / 2);
+		for (C2 current : upsampledSteps) {
+			if (old != null) {
+				double dx = current.x() - old.x();
+				double dy = current.y() - old.y();
+				C2 middle = new C2(old.x() + dx / 2, old.y() + dy / 2);
 				newlist.add(old);
 				newlist.add(middle);
-				if (current == upsample_steps.getLast()) {
+				if (current == upsampledSteps.getLast()) {
 					newlist.add(current);
 				}
 			}
 			old = current;
 		}
 
-		upsample_steps = newlist;
+		upsampledSteps = newlist;
 	}
 
-	private C2 upsample_step() {
-		if (!upsample_steps.isEmpty()) {
-			return upsample_steps.removeFirst();
+	private C2 upsampleStep() {
+		if (!upsampledSteps.isEmpty()) {
+			return upsampledSteps.removeFirst();
 		}
 
-		while (original_steps.size() < 2) {
+		while (drawerSteps.size() < 2) {
 			C2 step = projection.p(drawer.step(), dim);
 			C2 sized = new C2(step).resize(dim.size());
 			C2 croped = new C2(step).resize(dim.size(), dim.width(), dim.height(), dim.margin());
 
 			if (sized.same(croped)) {
-				original_steps.add(sized);
+				drawerSteps.add(sized);
 			} else {
 				if (drawer.finished()) {
-					original_steps.add(new C2(0,0));
+					drawerSteps.add(new C2(0,0));
 				}
 			}
 		}
 
-		upsample_steps.add(original_steps.removeFirst());
-		upsample_steps.add(original_steps.getFirst());
+		upsampledSteps.add(drawerSteps.removeFirst());
+		upsampledSteps.add(drawerSteps.getFirst());
 
-		while (max_dist(upsample_steps) > speed * UPSAMPLE_FACTOR) {
+		while (maxDistance(upsampledSteps) > resolution * UPSAMPLE_FACTOR) {
 			upsample();
 		}
 
-		return upsample_steps.removeFirst();
+		return upsampledSteps.removeFirst();
 	}
 
 	public C2 step() {
 		C2 step;
 
-		if (last_step == null) {
-			step = upsample_step();
-			last_step = step;
+		if (lastStep == null) {
+			step = upsampleStep();
+			lastStep = step;
 			return step;
 		}
 		double distance = 0;
 		do {
-			step = upsample_step();
-			distance = new C2(step.x - last_step.x, step.y - last_step.y).distance();
+			step = upsampleStep();
+			distance = new C2(step.x() - lastStep.x(), step.y() - lastStep.y()).distance();
 
 			if (drawer.finished()) {
-				last_step = step;
+				lastStep = step;
 				return step;
 			}
-		} while (distance < speed);
+		} while (distance < resolution);
 
-		last_step = step;
+		lastStep = step;
 
 		return step;
 	}
 
 	public boolean finished() {
-		return upsample_steps.isEmpty() && drawer.finished();
+		return upsampledSteps.isEmpty() && drawer.finished();
 	}
 }

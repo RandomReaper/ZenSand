@@ -3,14 +3,33 @@
  */
 package org.pignat.project.zensand.components;
 
-public class C2 {
-	public double x;
-	public double y;
+import java.io.Serializable;
 
+public class C2 implements Serializable {
+	private double x;
+	private double y;
+	
+	public double x() {
+		return x;
+	}
+
+	public double y() {
+		return y;
+	}
+
+	public void x(double x) {
+		this.x = x;
+	}
+
+	public void y(double y) {
+		this.y = y;
+	}
+	
 	public boolean same(C2 other) {
 		return other.x == x && other.y == y;
 	}
 	
+	@Override
 	public String toString() {
 		return String.format("C2(%f, %f)", x, y);
 	}
@@ -20,12 +39,12 @@ public class C2 {
 		y = c.y;
 	}
 	
-	public C2(double _x, double _y) {
-		x = _x;
-		y = _y;
+	public C2(double x, double y) {
+		this.x = x;
+		this.y = y;
 	}
 
-	public C2 xycrop(double width, double height, double margin) {
+	public C2 crop(double width, double height, double margin) {
 		double cx = width / 2 - margin;
 		double cy = height / 2 - margin;
 
@@ -48,7 +67,7 @@ public class C2 {
 		return this;
 	}
 	
-	public C2 mirror_margin(double width, double height, double margin) {
+	public C2 mirrorMargin(double width, double height, double margin) {
 		double cx = width / 2 - margin;
 		double cy = height / 2 - margin;
 		if (x > cx) {
@@ -67,16 +86,16 @@ public class C2 {
 			y = -2*cy - y;
 		}
 		
-		return this.xycrop(width, height, margin);
+		return this.crop(width, height, margin);
 	}
 
 	public double distance() {
 		return Math.sqrt(x * x + y * y);
 	}
 	
-	public static C2 XYCropped(A2 motor_pos, double size, double width, double height, double margin) {
-		C2 v = V2.XY(motor_pos, size);
-		return v.xycrop(width, height, margin);
+	public static C2 crop(A2 motor, double size, double width, double height, double margin) {
+		C2 v = V2.xy(motor, size);
+		return v.crop(width, height, margin);
 	}
 
 	public static double sqdiff(C2 a, C2 b) {
@@ -97,6 +116,6 @@ public class C2 {
 	
 	public C2 resize(double size, double width, double height, double margin) {
 		resize(size);
-		return xycrop(width, height, margin);
+		return crop(width, height, margin);
 	}
 }

@@ -1,10 +1,12 @@
 package org.pignat.project.zensand.components;
 
-public interface Drawer {
+import java.io.Serializable;
+
+public interface Drawer extends Serializable {
 
 	abstract String name();
 
-	abstract void init(double ball_size);
+	abstract void init(double ballSize);
 
 	abstract C2 step();
 

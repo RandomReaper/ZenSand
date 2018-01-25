@@ -25,6 +25,7 @@ public class App {
 	public static void main(String[] args) {
 
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				createAndShowGUI();
 			}
@@ -42,22 +43,22 @@ public class App {
 
 class MyPanel extends JPanel {
 
-	BufferedImage img;
+	transient BufferedImage img;
 	int drawerCounter = -1;
 	Dimensions dim = new Dimensions(25, 25, 1);
-	Controller controller = new Controller(Drawers.get(0, dim.ball_size()), dim, 1);
-	int width;
-	int height;
+	Arms arms = new Arms(dim.size());
+	Controller controller = new Controller(Drawers.get(0, dim.ballSize()), arms, dim, 1);
+	int oldWidth;
+	int oldHeigth;
 	boolean debug;
 
 	public MyPanel(boolean debug) {
-		this.debug = false;
-
 		img = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-		width = getWidth();
-		height = getHeight();
+		oldWidth = getWidth();
+		oldHeigth = getHeight();
 
 		ActionListener repaintPerformer = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				MyPanel.this.repaint();
 			}
@@ -66,14 +67,16 @@ class MyPanel extends JPanel {
 		new Timer(10, repaintPerformer).start();
 
 		ActionListener stepPerformer = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
-				MyPanel.this.step(100);
+				MyPanel.this.step(10);
 			}
 		};
 
 		new Timer(20, stepPerformer).start();
 
 		ActionListener fadePerformer = new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent evt) {
 				MyPanel.this.fade();
 			}
@@ -83,6 +86,7 @@ class MyPanel extends JPanel {
 
 	}
 
+	@Override
 	public Dimension getPreferredSize() {
 		return new Dimension(250, 200);
 	}
@@ -92,14 +96,14 @@ class MyPanel extends JPanel {
 
 		for (int i = 0; i < steps; i++) {
 
-			double x = controller.arms().pos().x;
-			double y = controller.arms().pos().y;
+			double x = controller.arms().pos().x();
+			double y = controller.arms().pos().y();
 			gra.setColor(Color.WHITE);
-			Ellipse2D.Double circle = new Ellipse2D.Double(getWidth() / 2 + x - dim.ball_size()/2, getHeight() / 2 + y - dim.ball_size()/2, dim.ball_size(), dim.ball_size());
+			Ellipse2D.Double circle = new Ellipse2D.Double(getWidth() / 2.0 + x - dim.ballSize()/2, getHeight() / 2.0 + y - dim.ballSize()/2, dim.ballSize(), dim.ballSize());
 			gra.fill(circle);
 
 			if (controller.finished()) {
-				controller.drawer(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()));
+				controller.drawer(Drawers.get(drawerCounter++, dim.ballSize()/dim.size()));
 			}
 			controller.step();
 		}
@@ -107,25 +111,26 @@ class MyPanel extends JPanel {
 	}
 
 	public void fade() {
-		RescaleOp op = new RescaleOp(new float[]{0.999f,0.999f,0.999f,1.0f}, new float[]{0,0,0,0}, null);
+		RescaleOp op = new RescaleOp(new float[]{0.999f,0.999f,0.999f}, new float[]{0,0,0}, null);
 		op.filter(img, img);
 	}
 
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		if (width != getWidth() || height != getHeight()) {
-			width = getWidth();
-			height = getHeight();
+		if (oldWidth != getWidth() || oldHeigth != getHeight()) {
+			oldWidth = getWidth();
+			oldHeigth = getHeight();
 			drawerCounter = 0;
-			dim = new Dimensions(width, height, 5);
-			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			controller = new Controller(Drawers.get(drawerCounter++, dim.ball_size()/dim.size()), dim, .5);
+			dim = new Dimensions(oldWidth, oldHeigth, 5);
+			arms = new Arms(dim.size());
+			img = new BufferedImage(oldWidth, oldHeigth, BufferedImage.TYPE_INT_RGB);
+			controller = new Controller(Drawers.get(drawerCounter++, dim.ballSize()/dim.size()), arms, dim, .5);
 		}
 
 		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight(), null);
 
-		Arms arms = controller.arms();
 		g.setColor(Color.YELLOW);
 		int size = (int) controller.dim().size();
 		if (debug) {
@@ -134,23 +139,23 @@ class MyPanel extends JPanel {
 
 		if (debug) {
 			g.setColor(Color.ORANGE);
-			int x = (int) controller.arms().pos().x;
-			int y = (int) controller.arms().pos().y;
-			int x1 = (int) controller.arms().pos1().x;
-			int y1 = (int) controller.arms().pos1().y;
+			int x = (int) controller.arms().pos().x();
+			int y = (int) controller.arms().pos().y();
+			int x1 = (int) controller.arms().pos1().x();
+			int y1 = (int) controller.arms().pos1().y();
 			g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
 			g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
 		}
 
-		if (true) {
-			g.setColor(Color.RED);
-			int x = (int) arms.pos().x;
-			int y = (int) arms.pos().y;
-			int x1 = (int) arms.pos1().x;
-			int y1 = (int) arms.pos1().y;
-			g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
-			g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
-		}
+		// Draw arms
+		g.setColor(Color.RED);
+		int x = (int) arms.pos().x();
+		int y = (int) arms.pos().y();
+		int x1 = (int) arms.pos1().x();
+		int y1 = (int) arms.pos1().y();
+		g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
+		g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
+
 		if (debug) {
 			g.setColor(Color.RED);
 			g.drawOval(getWidth() / 2 - size * 2, getHeight() / 2 - size * 2, size * 4, size * 4);

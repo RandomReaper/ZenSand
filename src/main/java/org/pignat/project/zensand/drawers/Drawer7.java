@@ -5,19 +5,21 @@ import org.pignat.project.zensand.components.C2;
 
 public class Drawer7 implements Drawer {
 	private double count;
-	private double ball_size;
+	private double ballSize;
 	private boolean finished;
 
+	@Override
 	public String name() {
-		return "Drawer 7";
+		return "Drawer7";
 	}
 
-	public void init(double _ball_size) {
-		ball_size = _ball_size;
+	@Override
+	public void init(double ballSize) {
+		this.ballSize = ballSize;
 		finished = false;
 
 		double a = 0.01;
-		double b = ball_size / 10;
+		double b = ballSize / 10;
 		double r;
 
 		do {
@@ -26,22 +28,24 @@ public class Drawer7 implements Drawer {
 		} while (r < 1.1);
 	}
 
+	@Override
 	public C2 step() {
 		if (!finished()) {
 			count -= 2 * Math.PI / 10000;
 		}
-		// return new C2(0,0);
+
 		double a = 0.01;
-		double b = ball_size / 10;
+		double b = ballSize / 10;
 		double r = a + b * count;
 
-		if (r < ball_size / 10) {
+		if (r < ballSize / 10) {
 			finished = true;
 		}
 
 		return new C2(r * Math.cos(count), r * Math.sin(count));
 	}
 
+	@Override
 	public boolean finished() {
 		return finished;
 	}

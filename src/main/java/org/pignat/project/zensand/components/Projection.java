@@ -1,5 +1,7 @@
 package org.pignat.project.zensand.components;
 
-public interface Projection {
+import java.io.Serializable;
+
+public interface Projection extends Serializable {
 	abstract C2 p(C2 in, Dimensions dim);
 }

@@ -1,36 +1,38 @@
 package org.pignat.project.zensand.components;
 
-public class Arms {
+import java.io.Serializable;
+
+public class Arms implements Serializable {
 	private A2 speed = new A2(0, 0);
 
-	private A2 m = new A2(0, Math.PI);
+	private A2 motor = new A2(0, Math.PI);
 	private double size;
 
-	public Arms(double s) {
-		size = s;
+	public Arms(double size) {
+		this.size = size;
 	}
 
-	public void speed(A2 s) {
-		speed = s;
+	public void speed(A2 speed) {
+		this.speed = speed;
 	}
 
-	public void pos(A2 p) {
-		m = p;
+	public void pos(A2 pos) {
+		motor = pos;
 	}
 
 	public void step() {
-		m = m.move(speed);
+		motor = motor.move(speed);
 	}
 
 	public C2 pos() {
-		return V2.XY(m, size);
+		return V2.xy(motor, size);
 	}
 
 	public C2 pos1() {
-		return V2.XY(new A2(m.a, m.a), size / 2);
+		return V2.xy(new A2(motor.a(), motor.a()), size / 2);
 	}
 
 	public A2 m() {
-		return m;
+		return motor;
 	}
 }

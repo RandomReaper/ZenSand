@@ -4,19 +4,22 @@
 
 package org.pignat.project.zensand.components;
 
-public class V2 {
-	public static C2 XY(A2 motor_pos, double size) {
-		return new C2(size * (Math.cos(motor_pos.a) + Math.cos(motor_pos.b)),
-				size * (Math.sin(motor_pos.a) + Math.sin(motor_pos.b)));
+import java.io.Serializable;
+
+public class V2 implements Serializable {
+	
+	public static C2 xy(A2 motor, double size) {
+		return new C2(size * (Math.cos(motor.a()) + Math.cos(motor.b())),
+				size * (Math.sin(motor.a()) + Math.sin(motor.b())));
 	}
 	
 	public static double lawOfCosine(double a, double b, double c) {
 		return Math.acos((a * a + b * b - c * c) / (2 * a * b));
 	}
 
-	public static A2 angles_a(C2 dest, double size) {
+	public static A2 anglesSolution1(C2 dest, double size) {
 		double dist = dest.distance();
-		double d1 = Math.atan2(dest.y, dest.x);
+		double d1 = Math.atan2(dest.y(), dest.x());
 		double d2 = lawOfCosine(dist, size, size);
 		double a1 = d1 + d2;
 		double a2 = lawOfCosine(size, size, dist);
@@ -24,9 +27,9 @@ public class V2 {
 		return new A2(a1, a2).norm();
 	}
 
-	public static A2 angles_b(C2 dest, double size) {
+	public static A2 anglesSolution2(C2 dest, double size) {
 		double dist = dest.distance();
-		double d1 = Math.atan2(dest.y, dest.x);
+		double d1 = Math.atan2(dest.y(), dest.x());
 		double d2 = -lawOfCosine(dist, size, size);
 		double a1 = d1 + d2;
 		double a2 = -lawOfCosine(size, size, dist);
@@ -36,50 +39,53 @@ public class V2 {
 	
 	/**
 	 * Compute the next angle position using the XY destination and current arm's positions 
-	 * @param current_angle
+	 * @param current
 	 * @param size
 	 * @return
 	 */
-	public static A2 angles(C2 dest, A2 current_angle, double size) {
+	public static A2 angles(A2 current, C2 dest, double size) {
 		
-		if (dest.x == 0 && dest.y == 0)
+		if (dest.x() == 0 && dest.y() == 0)
 		{
-			return new A2(current_angle.a, -Math.PI);
+			return new A2(current.a(), -Math.PI);
 		}
 		
-		A2 angles_a = angles_a(dest, size);
-		A2 angles_b = angles_b(dest, size);
+		A2 angles1 = anglesSolution1(dest, size);
+		A2 angles2 = anglesSolution2(dest, size);
 
 		/**
 		 * dest can be out of reach because of computational error or because of a caller's error
 		 * handle computational error where the dest is too far for the size.
 		 */
-		if (Double.isNaN(angles_a.a) || Double.isNaN(angles_a.b))
+		if (Double.isNaN(angles1.a()) || Double.isNaN(angles1.b()))
 		{
-			return current_angle;
+			return current;
 		}
 		
-		double speed_a = new A2(angles_a.a - current_angle.a, angles_a.b - current_angle.b).norm().a;
-		double speed_b = new A2(angles_b.a - current_angle.a, angles_b.b - current_angle.b).norm().a;
+		/**
+		 * Select the solution with the lower cost (=movement)
+		 */
+		double speed1 = new A2(angles1.a() - current.a(), angles1.b() - current.b()).norm().a();
+		double speed2 = new A2(angles2.a() - current.a(), angles2.b() - current.b()).norm().a();
 
-		if (Math.abs(speed_a) < Math.abs(speed_b)) {
-			return angles_a;
+		if (Math.abs(speed1) < Math.abs(speed2)) {
+			return angles1;
 		} else {
-			return angles_b;
+			return angles2;
 		}
 	}
 
-	public static A2 bestPos(A2 current_angle, C2 dest, double size) {
+	public static A2 bestPos(A2 current, C2 dest, double size) {
 
-		return angles(dest, current_angle, size);
+		return angles(current, dest, size);
 	}
 
-	public static A2 bestSpeed(A2 motor, C2 dest, double size) {
-		A2 angles = bestPos(motor, dest, size);
+	public static A2 bestSpeed(A2 current, C2 dest, double size) {
+		A2 angles = bestPos(current, dest, size);
 
-		bestPos(motor, new C2(10000,10000), size);
-		angles.a = angles.a - motor.a;
-		angles.b = angles.b - motor.b + angles.a;
+		bestPos(current, new C2(10000,10000), size);
+		angles.a(angles.a() - current.a());
+		angles.b(angles.b() - current.b() + angles.a());
 
 		return angles;
 	}

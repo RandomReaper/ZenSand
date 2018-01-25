@@ -1,33 +1,31 @@
 package org.pignat.project.zensand.components;
 
-public class Dimensions {
+import java.io.Serializable;
+
+public class Dimensions implements Serializable {
 
 	private double width;
 	private double height;
 	private double size;
-	private double ball_size;
+	private double ballSize;
 	private double margin;
-
 	
-	public Dimensions(double _width, double _height, double _size, double _ball_size, double _margin) {
-		width = _width;
-		height = _height;
-		size = _size;
-		ball_size = _ball_size;
-		margin = _margin;
+	public Dimensions(double width, double height, double size, double ballSize, double margin) {
+		this.width = width;
+		this.height = height;
+		this.size = size;
+		this.ballSize = ballSize;
+		this.margin = margin;
 	}
 	
-	private static double size(double width, double height, double margin) {
-		double lower_bound = Math.min((width - 2 * margin) / 2, (height - 2 * margin) / 2);
-		double upper_bound = Math.sqrt(Math.pow(width - 2 * margin, 2) + Math.pow(height - 2 * margin, 2)) / 4;
-		return Math.min(upper_bound, lower_bound);		
+	private static double size(double width, double height) {
+		double lowerBound = Math.min(width / 2, height / 2);
+		double upperBound = Math.sqrt(width*width+height*height) / 4;
+		return Math.min(upperBound, lowerBound);		
 	}
 	
-	public Dimensions(double _width, double _height, double _margin) {
-		//double lower_bound = Math.min((width - 2 * margin) / 2, (height - 2 * margin) / 2);
-		//double upper_bound = Math.sqrt(Math.pow(width - 2 * margin, 2) + Math.pow(height - 2 * margin, 2)) / 4;
-		//size = (int) Math.min(upper_bound, lower_bound);
-		this(_width, _height, Dimensions.size(_width, _height, _margin), Math.min(_width,_height)/100, _margin);
+	public Dimensions(double width, double height, double margin) {
+		this(width, height, Dimensions.size(width, height), Math.min(width,height)/100, margin);
 	}
 
 	public double width() {
@@ -39,8 +37,8 @@ public class Dimensions {
 	public double size() {
 		return size;
 	}
-	public double ball_size() {
-		return ball_size;
+	public double ballSize() {
+		return ballSize;
 	}
 	public double margin() {
 		return margin;

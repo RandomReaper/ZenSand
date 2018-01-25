@@ -1,23 +1,25 @@
 package org.pignat.project.zensand.components;
 
+import java.io.Serializable;
+
 import org.pignat.project.zensand.projection.*;
 
-public class Controller {
+public class Controller implements Serializable {
 	private Dimensions dim;
 	private Arms arms;
 	private Path path;
 	private double speed;
 
-	public Controller(Drawer d, Dimensions _dim, double _speed) {
-		speed = _speed;
-		dim = _dim;
+	public Controller(Drawer d, Arms arms, Dimensions dim, double speed) {
+		this.speed = speed;
+		this.dim = dim;
 
-		arms = new Arms(dim.size());
-		path = new Path(d, new ProjectionMirror(), dim, speed);
+		this.arms = arms;
+		path = new Path(d, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 
 	public void drawer(Drawer d) {
-		path = new Path(d, new ProjectionMirror(), dim, speed);
+		path = new Path(d, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 	
 	public boolean finished() {
@@ -34,10 +36,7 @@ public class Controller {
 
 	public void step() {
 		C2 next = path.step();
-
-		A2 best_speed = V2.bestSpeed(arms.m(), next, dim.size());
-
-		arms.speed(best_speed);
+		arms.speed(V2.bestSpeed(arms.m(), next, dim.size()));
 		arms.step();
 	}
 }
