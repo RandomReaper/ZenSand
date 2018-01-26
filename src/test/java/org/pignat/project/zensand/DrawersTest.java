@@ -17,28 +17,32 @@ public class DrawersTest extends TestCase {
 		return new TestSuite(DrawersTest.class);
 	}
 
-	public void testDrawers() {
+	private static void testDrawer(Drawer d) {
 		int nr = 1000*1000*1000;
+		
+		assertFalse(String.format("drawer '%s' (%s) finished with zero points", d.name(), d.getClass()), d.finished());
+		
+		for (int j = 0 ; j < nr; j++)
+		{
+			d.step();
+			if (d.finished())
+			{
+				break;
+			}
+		}
+		
+		assertTrue(String.format("drawer '%s' (%s) not finished with %d points", d.name(), d.getClass(), nr), d.finished());
+		
+		assertTrue(String.format("drawer '%s' (%s) is finished but gives new points ", d.name(), d.getClass()), d.step().same(d.step()));		
+	}
+	
+	public void testDrawers() {
+
 		assertTrue(Drawers.size() > 0);
 		
 		for (int i = 0 ; i < Drawers.size();i++)
 		{
-			Drawer d = Drawers.get(i, 0.01);
-
-			assertFalse(String.format("drawer '%s' (%s) finished with zero points", d.name(), d.getClass()), d.finished());
-			
-			for (int j = 0 ; j < nr; j++)
-			{
-				d.step();
-				if (d.finished())
-				{
-					break;
-				}
-			}
-			
-			assertTrue(String.format("drawer '%s' (%s) not finished with %d points", d.name(), d.getClass(), nr), d.finished());
-			
-			assertTrue(String.format("drawer '%s' (%s) is finished but gives new points ", d.name(), d.getClass()), d.step().same(d.step()));
+			testDrawer(Drawers.get(i, 0.01));
 		}
 	}
 	
