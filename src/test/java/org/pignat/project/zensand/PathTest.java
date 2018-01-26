@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import org.pignat.project.zensand.components.C2;
 import org.pignat.project.zensand.components.Dimensions;
 import org.pignat.project.zensand.components.Drawer;
-import org.pignat.project.zensand.components.Path;
+import org.pignat.project.zensand.components.Path.CompletePath;
 import org.pignat.project.zensand.projection.ProjectionNop;
 
 import junit.framework.Test;
@@ -63,7 +63,7 @@ public class PathTest extends TestCase {
 		};
 		final int nr = 100*1000;
 		d.init(0.01);
-		Path p1 = new Path(d, new ProjectionNop(), dim, new C2(0,0), 5);
+		CompletePath p1 = new CompletePath(d, new ProjectionNop(), dim, new C2(0,0), 5);
 		LinkedList<C2> steps1 = new LinkedList<C2>();
 		
 		for (int i = 0 ; i < nr; i++) {
@@ -74,7 +74,7 @@ public class PathTest extends TestCase {
 		}
 
 		d.init(0.01);
-		Path p2 = new Path(d, new ProjectionNop(), dim, new C2(0,0), 2);
+		CompletePath p2 = new CompletePath(d, new ProjectionNop(), dim, new C2(0,0), 2);
 		LinkedList<C2> steps2 = new LinkedList<C2>();
 
 		for (int i = 0 ; i < nr; i++) {
@@ -129,7 +129,7 @@ public class PathTest extends TestCase {
 		
 		final int nr = 100*1000;
 		doubleDrawer.init(0.01);
-		Path p1 = new Path(doubleDrawer, new ProjectionNop(), dim, new C2(0,0), 5);
+		CompletePath p1 = new CompletePath(doubleDrawer, new ProjectionNop(), dim, new C2(0,0), 5);
 		LinkedList<C2> steps1 = new LinkedList<C2>();
 		
 		for (int i = 0 ; i < nr; i++) {

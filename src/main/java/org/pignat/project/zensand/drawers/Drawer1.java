@@ -16,7 +16,7 @@ public class Drawer1 implements Drawer {
 		if (!finished()) {
 			count += 2 * Math.PI / 1000;
 		}
-		return new C2(0.3 * Math.sin(count), 0.3 * Math.cos(count));
+		return new C2(1 * Math.sin(count), 1 * Math.cos(count));
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class Drawer1 implements Drawer {
 
 	@Override
 	public boolean finished() {
-		return count > 2 * Math.PI * 1.2;
+		return count > 2 * Math.PI;
 	}
 }

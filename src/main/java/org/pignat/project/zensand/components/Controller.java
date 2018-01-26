@@ -2,12 +2,14 @@ package org.pignat.project.zensand.components;
 
 import java.io.Serializable;
 
+import org.pignat.project.zensand.components.Path.CompletePath;
+import org.pignat.project.zensand.components.Path.IPath;
 import org.pignat.project.zensand.projection.*;
 
 public class Controller implements Serializable {
 	private Dimensions dim;
 	private Arms arms;
-	private Path path;
+	private IPath path;
 	private double speed;
 	private Drawer drawer;
 
@@ -16,12 +18,12 @@ public class Controller implements Serializable {
 		this.arms = arms;
 		this.dim = dim;
 		this.speed = speed;
-		path = new Path(drawer, new ProjectionNop(), dim, arms.pos(), speed);
+		path = new CompletePath(drawer, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 
 	public void drawer(Drawer drawer) {
 		this.drawer = drawer;
-		path = new Path(drawer, new ProjectionNop(), dim, arms.pos(), speed);
+		path = new CompletePath(drawer, new ProjectionNop(), dim, arms.pos(), speed);
 	}
 	
 	public boolean finished() {
