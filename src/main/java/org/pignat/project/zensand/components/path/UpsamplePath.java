@@ -1,4 +1,4 @@
-package org.pignat.project.zensand.components.Path;
+package org.pignat.project.zensand.components.path;
 
 import java.util.LinkedList;
 

@@ -2,8 +2,8 @@ package org.pignat.project.zensand.components;
 
 import java.io.Serializable;
 
-import org.pignat.project.zensand.components.Path.CompletePath;
-import org.pignat.project.zensand.components.Path.IPath;
+import org.pignat.project.zensand.components.path.CompletePath;
+import org.pignat.project.zensand.components.path.IPath;
 import org.pignat.project.zensand.projection.*;
 
 public class Controller implements Serializable {

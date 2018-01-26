@@ -1,4 +1,4 @@
-package org.pignat.project.zensand.components.Path;
+package org.pignat.project.zensand.components.path;
 
 import org.pignat.project.zensand.components.C2;
 

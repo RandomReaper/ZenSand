@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import org.pignat.project.zensand.components.C2;
 import org.pignat.project.zensand.components.Dimensions;
 import org.pignat.project.zensand.components.Drawer;
-import org.pignat.project.zensand.components.Path.CompletePath;
+import org.pignat.project.zensand.components.path.CompletePath;
 import org.pignat.project.zensand.projection.ProjectionNop;
 
 import junit.framework.Test;
