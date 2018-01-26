@@ -19,7 +19,7 @@ public class FixedMotorSpeed implements Drawer {
 	
 	@Override
 	public String name() {
-		return "0FixedMotorSpeed";
+		return "FixedMotorSpeed";
 	}
 
 	@Override

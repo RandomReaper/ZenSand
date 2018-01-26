@@ -92,16 +92,11 @@ public class C2 implements Serializable {
 	public double distance() {
 		return Math.sqrt(x * x + y * y);
 	}
+
+	public double distance(C2 that) {
+		return new C2(that.x()-x, that.y()-y).distance();
+	}
 	
-	public static C2 crop(A2 motor, double size, double width, double height, double margin) {
-		C2 v = V2.xy(motor, size);
-		return v.crop(width, height, margin);
-	}
-
-	public static double sqdiff(C2 a, C2 b) {
-		return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2);
-	}
-
 	public C2 resize(double size) {
 		x *= 2 * size;
 		y *= 2 * size;
@@ -111,7 +106,7 @@ public class C2 implements Serializable {
 	public C2 desize(double size) {
 		x /= 2 * size;
 		y /= 2 * size;
-		return this;	
+		return this;
 	}
 	
 	public C2 resize(double size, double width, double height, double margin) {

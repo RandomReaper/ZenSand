@@ -33,4 +33,13 @@ public class A2Test extends TestCase {
 		assertTrue(new A2(-angle-offset, -angle-offset).norm().a() >= -angle-offset);
 		assertTrue(new A2(-angle-offset, -angle-offset).norm().b() >= -angle-offset);
 	}
+	
+	public void testToString() {
+		A2 a1 = new A2(1, 2);
+		A2 a2 = new A2(2, 2);
+		
+		assertFalse(a1.toString().length() == 0);
+		assertFalse(a2.toString().length() == 0);
+		assertFalse(a1.toString().equals(a2.toString()));
+	}
 }

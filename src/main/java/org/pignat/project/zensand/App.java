@@ -35,7 +35,7 @@ public class App {
 	private static void createAndShowGUI() {
 		JFrame f = new JFrame("ZenSand");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.add(new MyPanel(true));
+		f.add(new MyPanel(false));
 		f.setSize(250, 250);
 		f.setVisible(true);
 	}
@@ -53,6 +53,7 @@ class MyPanel extends JPanel {
 	boolean debug;
 
 	public MyPanel(boolean debug) {
+		this.debug = debug;
 		oldWidth = getWidth();
 		oldHeigth = getHeight();
 
@@ -66,11 +67,11 @@ class MyPanel extends JPanel {
 		new Timer(20, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
-				MyPanel.this.step(100);
+				MyPanel.this.step(10);
 			}
 		}).start();
 
-		new Timer(20 * 100, new ActionListener() {
+		new Timer(200, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				MyPanel.this.fade();
@@ -84,6 +85,9 @@ class MyPanel extends JPanel {
 	}
 
 	public void step(int steps) {
+		if (img == null) {
+			return;
+		}
 		Graphics2D gra = img.createGraphics();
 
 		for (int i = 0; i < steps; i++) {
@@ -95,18 +99,17 @@ class MyPanel extends JPanel {
 			double b = dim.ballSize();
 
 			gra.setColor(Color.DARK_GRAY);
-			gra.fill(new Ellipse2D.Double(w + x + b / 4, h + y + b / 4, b/1.5, b/1.5));
+			gra.fill(new Ellipse2D.Double(w + x + b / 4, h + y + b / 4, b / 1.5, b / 1.5));
 			gra.setColor(Color.LIGHT_GRAY);
-			gra.fill(new Ellipse2D.Double(w + x - b , h + y - b / 2, b/1.5, b/1.5));
+			gra.fill(new Ellipse2D.Double(w + x - b, h + y - b / 2, b / 1.5, b / 1.5));
 			gra.setColor(Color.GRAY);
 			gra.fill(new Ellipse2D.Double(w + x - b / 2, h + y - b / 2, b, b));
 
 			if (controller.finished()) {
-				controller.drawer(Drawers.get(drawerCounter++, dim.ballSize() / dim.size()));
+				controller.drawer(Drawers.get(++drawerCounter, dim.ballSize() / dim.size()));
 			}
 			controller.step();
 		}
-
 	}
 
 	public void fade() {
@@ -125,7 +128,7 @@ class MyPanel extends JPanel {
 			dim = new Dimensions(oldWidth, oldHeigth, 5);
 			arms = new Arms(dim.size());
 			img = new BufferedImage(oldWidth, oldHeigth, BufferedImage.TYPE_INT_RGB);
-			controller = new Controller(Drawers.get(drawerCounter++, dim.ballSize() / dim.size()), arms, dim, 1);
+			controller = new Controller(Drawers.get(drawerCounter, dim.ballSize() / dim.size()), arms, dim, .5);
 		}
 
 		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
@@ -157,10 +160,10 @@ class MyPanel extends JPanel {
 
 		double w = img.getWidth() / 2.0;
 		double h = img.getHeight() / 2.0;
-		double b = dim.ballSize()*2;
+		double b = dim.ballSize() * 2;
 		g.setColor(Color.WHITE);
 		((Graphics2D) g).fill(new Ellipse2D.Double(w + x - b / 2, h + y - b / 2, b, b));
-		
+
 		if (debug) {
 			g.setColor(Color.RED);
 			g.drawOval(getWidth() / 2 - size * 2, getHeight() / 2 - size * 2, size * 4, size * 4);
@@ -169,6 +172,8 @@ class MyPanel extends JPanel {
 		}
 
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(controller.drawer().name(), 0, 10);
+		if (debug) {
+			g.drawString(controller.drawer().name(), 0, 10);
+		}
 	}
 }

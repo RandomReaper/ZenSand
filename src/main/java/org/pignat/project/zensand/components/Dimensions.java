@@ -21,7 +21,7 @@ public class Dimensions implements Serializable {
 	private static double size(double width, double height) {
 		double lowerBound = Math.min(width / 2, height / 2);
 		double upperBound = Math.sqrt(width*width+height*height) / 4;
-		return Math.min(upperBound, lowerBound);		
+		return Math.max(upperBound, lowerBound);		
 	}
 	
 	public Dimensions(double width, double height, double margin) {

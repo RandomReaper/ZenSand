@@ -29,6 +29,8 @@ public class Drawers {
 		Set<Class<? extends Drawer>> subTypes = reflections.getSubTypesOf(Drawer.class);
 
 		for (Class<? extends Drawer> c : subTypes) {
+			/* exclude test class drawers */
+			if (c.toString().contains("org.pignat.project.zensand.drawers"))
 			try {
 				list.add(c.newInstance());
 			} catch (InstantiationException e) {

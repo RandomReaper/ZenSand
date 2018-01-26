@@ -47,7 +47,7 @@ public class V2 implements Serializable {
 		
 		if (dest.x() == 0 && dest.y() == 0)
 		{
-			return new A2(current.a(), -Math.PI);
+			return new A2(current.a(), current.a()+Math.PI);
 		}
 		
 		A2 angles1 = anglesSolution1(dest, size);
@@ -83,7 +83,6 @@ public class V2 implements Serializable {
 	public static A2 bestSpeed(A2 current, C2 dest, double size) {
 		A2 angles = bestPos(current, dest, size);
 
-		bestPos(current, new C2(10000,10000), size);
 		angles.a(angles.a() - current.a());
 		angles.b(angles.b() - current.b() + angles.a());
 

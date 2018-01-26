@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 public class Path implements Serializable {
 
-	private static final double UPSAMPLE_FACTOR = 5;
+	private static final double UPSAMPLE_FACTOR = 10;
 	private Drawer drawer;
 	private Dimensions dim;
 	private Projection projection;

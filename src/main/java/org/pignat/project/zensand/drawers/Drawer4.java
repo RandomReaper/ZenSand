@@ -13,10 +13,15 @@ public class Drawer4 implements Drawer {
 
 	@Override
 	public C2 step() {
+		double a = 0.4*.5;
+		double b = 0.6*.5;
+		double sa = 3.22 * count;
+		double sb = 1.00 * count;
+		
 		if (!finished()) {
 			count += 2 * Math.PI / 1000;
 		}
-		return new C2(0.2 * Math.sin(3.22*count) + 0.5*Math.sin(count), 0.2 * Math.cos(3.22*count) + 0.5*Math.cos(count));
+		return new C2(a * Math.sin(sa) + b*Math.sin(sb), a * Math.cos(sa) + b*Math.cos(sb));
 	}
 
 	@Override
