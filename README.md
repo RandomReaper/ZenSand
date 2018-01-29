@@ -12,7 +12,7 @@ The goal is to create a decorative box with a ball drawing in sand.
 ## Design choice
 Bruce's table are round and I don't have any round table, so I'll limit the movement to a rectangular area.
 
-##Part #1 The simulator
+## Part #1: the simulator
 ![Simulator](doc/img/sim.png)
 
 ### Give it a try
