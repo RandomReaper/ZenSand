@@ -22,15 +22,17 @@ public class DrawersTest extends TestCase {
 		
 		assertFalse(String.format("drawer '%s' (%s) finished with zero points", d.name(), d.getClass()), d.finished());
 		
-		for (int j = 0 ; j < nr; j++)
+		int j;
+		for (j = 0 ; j < nr; j++)
 		{
-			d.step();
 			if (d.finished())
 			{
 				break;
 			}
+			d.step();
 		}
 		
+		assertFalse(String.format("drawer '%s' (%s) finished with 0 points", d.name(), d.getClass()), j == 0);
 		assertTrue(String.format("drawer '%s' (%s) not finished with %d points", d.name(), d.getClass(), nr), d.finished());
 		
 		assertTrue(String.format("drawer '%s' (%s) is finished but gives new points ", d.name(), d.getClass()), d.step().same(d.step()));		

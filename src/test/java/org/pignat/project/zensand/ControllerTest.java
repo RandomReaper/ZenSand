@@ -27,15 +27,17 @@ public class ControllerTest extends TestCase {
 		{
 			Controller c = new Controller(Drawers.get(i,  0.01), arms, dim, 0.5);
 
-			for (int j = 0 ; j < nr; j++)
+			int j;
+			for (j = 0 ; j < nr; j++)
 			{
-				c.step();
 				if (c.finished())
 				{
 					break;
 				}
+				c.step();
 			}
 			
+			assertFalse(String.format("drawer '%s' (%s) finished with 0 points", c.drawer().name(), dim.getClass()), j == 0);
 			assertTrue(String.format("drawer '%s' (%s) not finished with %d points", c.drawer().name(), dim.getClass(), nr), c.drawer().finished());
 		}	
 	}

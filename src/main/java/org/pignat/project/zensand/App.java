@@ -54,8 +54,6 @@ class MyPanel extends JPanel {
 
 	public MyPanel(boolean debug) {
 		this.debug = debug;
-		oldWidth = getWidth();
-		oldHeigth = getHeight();
 
 		new Timer(20, new ActionListener() {
 			@Override
@@ -131,7 +129,7 @@ class MyPanel extends JPanel {
 			controller = new Controller(Drawers.get(drawerCounter, dim.ballSize() / dim.size()), arms, dim, .5);
 		}
 
-		g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
+		g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
 
 		g.setColor(Color.YELLOW);
 		int size = (int) controller.dim().size();
@@ -158,8 +156,8 @@ class MyPanel extends JPanel {
 		g.drawLine(getWidth() / 2, getHeight() / 2, getWidth() / 2 + x1, getHeight() / 2 + y1);
 		g.drawLine(getWidth() / 2 + x1, getHeight() / 2 + y1, getWidth() / 2 + x, getHeight() / 2 + y);
 
-		double w = img.getWidth() / 2.0;
-		double h = img.getHeight() / 2.0;
+		double w = getWidth() / 2.0;
+		double h = getHeight() / 2.0;
 		double b = dim.ballSize() * 2;
 		g.setColor(Color.WHITE);
 		((Graphics2D) g).fill(new Ellipse2D.Double(w + x - b / 2, h + y - b / 2, b, b));
