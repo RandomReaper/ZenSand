@@ -27,5 +27,4 @@ public class CompletePath implements IPath {
 	public C2 step() {
 		return downsample.step();
 	}
-
 }
