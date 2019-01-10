@@ -22,7 +22,7 @@ pipeline {
         {
             steps
             {
-                sh 'mvn -Dmaven.test.failure.ignore=true install' 
+                sh 'mvn -B -Dmaven.test.failure.ignore=true test' 
             }
             post
             {
