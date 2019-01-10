@@ -24,5 +24,6 @@
 	</dependencies>
 	<properties>
 		<exec.mainClass>org.pignat.project.zensand.App</exec.mainClass>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 </project>
