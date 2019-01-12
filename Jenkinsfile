@@ -5,6 +5,10 @@ pipeline {
         maven '3.3.9'
         jdk 'jdk8'
     }
+    environment
+    {
+    	 MAVEN_OPTS="-Xmx200m"
+    }
     stages
     {
         stage ('Initialize')
