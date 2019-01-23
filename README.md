@@ -1,4 +1,4 @@
-# ZenSand [![Build Status](https://travis-ci.org/RandomReaper/ZenSand.svg?branch=master)](https://travis-ci.org/RandomReaper/ZenSand)[![jenkins at home](https://build.absintheaudio.com/buildStatus/icon?job=github_pim_vhdl)](https://build.absintheaudio.com/job/github_ZenSand/)
+# ZenSand [![Build Status](https://travis-ci.org/RandomReaper/ZenSand.svg?branch=master)](https://travis-ci.org/RandomReaper/ZenSand)
 ## A Bot drawing in sand
 
 The goal is to create a decorative box with a ball drawing in sand.
