@@ -39,34 +39,18 @@ pipeline {
     }
     post
     {
-        always
-        {
-            emailext (
-                subject: "[jenkins][${env.JOB_NAME}] Build ${env.BUILD_NUMBER} status:${currentBuild.currentResult}",
-                mimeType: 'text/html',
-                body: '${JELLY_SCRIPT,template="html"}',
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
-        }
-
-
         fixed
         {
-            emailext (
-                subject: "[jenkins][${env.JOB_NAME}] Build ${env.BUILD_NUMBER} fixed",
-                mimeType: 'text/html',
-                body: '${JELLY_SCRIPT,template="html"}',
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
+            telegramSend """
+            Build *${env.JOB_NAME}* #${env.BUILD_NUMBER} status:*Fixed !*, [details](${env.BUILD_URL})
+            """
         }
+
         regression
         {
-            emailext (
-                subject: "[jenkins][${env.JOB_NAME}] Build ${env.BUILD_NUMBER} regression",
-                mimeType: 'text/html',
-                body: '${JELLY_SCRIPT,template="html"}',
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
-            )
+            telegramSend """
+            Build *${env.JOB_NAME}* #${env.BUILD_NUMBER} status:*Regression!*, [details](${env.BUILD_URL})
+            """
         }
     }
 }
