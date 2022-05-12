@@ -4,43 +4,43 @@ import org.pignat.project.zensand.components.C2;
 
 public class DownsamplePath implements IPath {
 
-	private IPath sub;
-	private double resolution;
+    private IPath sub;
+    private double resolution;
 
-	private C2 lastOutputStep = null;
+    private C2 lastOutputStep = null;
 
-	public DownsamplePath(IPath sub, double resolution) {
-		this.sub = sub;
-		this.resolution = resolution;
-	}
-	
-	@Override
-	public boolean finished() {
-		return sub.finished();
-	}
+    public DownsamplePath(IPath sub, double resolution) {
+        this.sub = sub;
+        this.resolution = resolution;
+    }
 
-	@Override
-	public C2 step() {
-		C2 step;
+    @Override
+    public boolean finished() {
+        return sub.finished();
+    }
 
-		if (lastOutputStep == null) {
-			step = sub.step();
-			lastOutputStep = step;
-			return step;
-		}
-		double distance = 0;
-		do {
-			step = sub.step();
-			distance = new C2(step.x() - lastOutputStep.x(), step.y() - lastOutputStep.y()).distance();
+    @Override
+    public C2 step() {
+        C2 step;
 
-			if (sub.finished()) {
-				lastOutputStep = step;
-				return step;
-			}
-		} while (distance < resolution);
+        if (lastOutputStep == null) {
+            step = sub.step();
+            lastOutputStep = step;
+            return step;
+        }
+        double distance = 0;
+        do {
+            step = sub.step();
+            distance = new C2(step.x() - lastOutputStep.x(), step.y() - lastOutputStep.y()).distance();
 
-		lastOutputStep = step;
+            if (sub.finished()) {
+                lastOutputStep = step;
+                return step;
+            }
+        } while (distance < resolution);
 
-		return step;
-	}
+        lastOutputStep = step;
+
+        return step;
+    }
 }

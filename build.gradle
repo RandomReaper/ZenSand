@@ -1,0 +1,96 @@
+plugins {
+    id 'application'
+    id "org.jetbrains.kotlin.jvm" version "1.6.20"
+    id "com.palantir.git-version" version "0.14.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+test {
+    useJUnitPlatform()
+    //jvmArgs["-Djava.awt.headless=true"]
+    //environment.remove("DISPLAY")
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.reflections:reflections:0.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.assertj:assertj-core:3.9.2'
+    testImplementation 'org.assertj:assertj-swing-junit:3.9.2'
+}
+
+def genDir = "$buildDir/gen/"
+
+task versionGen {
+    def versionFile = "$genDir/version.txt"
+    outputs.upToDateWhen { false }
+    outputs.file(versionFile)
+    doLast {
+        new File(versionFile).text = """${gitVersion()}
+"""
+    }
+}
+
+application {
+    mainClass = 'org.pignat.project.zensand.App'
+}
+
+tasks.named('jar') {
+    dependsOn versionGen
+    dependsOn test
+    manifest {
+        attributes('Implementation-Title': rootProject.name,
+                'Implementation-Version': rootProject.version,
+                'Main-Class': 'org.pignat.project.zensand.App'
+        )
+    }
+    archiveBaseName.set(rootProject.name)
+    archiveVersion.set(rootProject.version)
+
+    // Add sources to the jar
+    from('src/main/java') {
+        include '**/*.java'
+    }
+    from('src/main/kotlin') {
+        include '**/*.kt'
+    }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from("$genDir") {
+        rename {
+            String filename -> "res/generated/" + filename
+        }
+    }
+}
+
+version = gitVersion()
+
+task runJar(type: JavaExec) {
+    dependsOn jar
+    mainClass = "-jar";
+    args jar.archiveFile.get()
+}
+
+task copyJar(type: Copy) {
+    from jar // copies output of file produced from jar task
+    into "$buildDir"
+    rename '.*', "$rootProject.name-dev.jar"
+}
+
+build.finalizedBy copyJar

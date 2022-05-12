@@ -19,7 +19,7 @@ Bruce's table are round and I don't have any round table, so I'll limit the move
 ```bash
 git clone https://github.com/RandomReaper/ZenSand.git
 cd ZenSand
-mvn install exec:java
+./gradlew runJar
 ```
 Feel free to resize the window.
 
